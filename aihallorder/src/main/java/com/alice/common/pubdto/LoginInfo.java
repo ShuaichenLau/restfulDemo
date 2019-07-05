@@ -3,7 +3,7 @@ package com.alice.common.pubdto;
 import java.io.Serializable;
 
 /**
- * Created by xuwei on 2018/7/23.
+ * Created by liusc on 2018/7/23.
  */
 public final class LoginInfo implements Serializable {
     /**

@@ -3,7 +3,7 @@ package com.alice.common.errorcode;
 //import com.alice.ijcf.boot.core.error.exception.BusiException;
 
 /**
- * Created by xuwei on 2018/7/24.
+ * Created by liusc on 2018/7/24.
  */
 public class AppError {
     public static String getErrorCode(String channelType,String errorType,String subSystemCode,String opCode,String seq){

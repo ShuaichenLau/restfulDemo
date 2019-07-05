@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Created by xuwei on 2018/7/12.
+ * Created by liusc on 2018/7/12.
  */
 public class LocalEntity  {
 

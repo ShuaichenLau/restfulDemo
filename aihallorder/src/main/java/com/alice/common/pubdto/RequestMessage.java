@@ -3,7 +3,7 @@ package com.alice.common.pubdto;
 import com.alibaba.fastjson.annotation.JSONField;
 
 /**
- * Created by xuwei on 2018/7/23.
+ * Created by liusc on 2018/7/23.
  */
 public class RequestMessage<T> {
     @JSONField(name = "loginInfo")

@@ -6,7 +6,7 @@ import java.util.Date;
 
 
 /**
- * Created by xuwei on 2018/7/23.
+ * Created by liusc on 2018/7/23.
  */
 
 public final class OprInfo implements Serializable {

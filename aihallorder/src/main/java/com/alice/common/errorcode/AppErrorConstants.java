@@ -1,14 +1,14 @@
 package com.alice.common.errorcode;
 
 /**
- * Created by xuwei on 2018/7/24.
+ * Created by liusc on 2018/7/24.
  */
 public interface AppErrorConstants {
 
     /**
      * 渠道编码（3位）
      *
-     * @author xuwei
+     * @author liusc
      *
      */
     public interface ChannelType
@@ -30,7 +30,7 @@ public interface AppErrorConstants {
     /**
      * 错误类型（2位）
      *
-     * @author xuwei
+     * @author liusc
      *
      */
     public interface ErrorType
@@ -55,7 +55,7 @@ public interface AppErrorConstants {
     /**
      * 子系统编码（3位）
      *
-     * @author xuwei
+     * @author liusc
      *
      */
     public interface SystemCode

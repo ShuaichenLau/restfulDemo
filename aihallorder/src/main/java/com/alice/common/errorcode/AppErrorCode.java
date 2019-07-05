@@ -1,7 +1,7 @@
 package com.alice.common.errorcode;
 
 /**
- * Created by xuwei on 2018/7/24.
+ * Created by liusc on 2018/7/24.
  */
 
 public class AppErrorCode extends AppError{

@@ -3,7 +3,7 @@ import java.io.Serializable;
 
 
 /**
- * Created by xuwei on 2018/7/23.
+ * Created by liusc on 2018/7/23.
  * @Description: 担保人节点
  */
 public class AssurePubInfo implements Serializable {

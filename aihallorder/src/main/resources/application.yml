@@ -1,0 +1,101 @@
+spring:
+ #整合mybatis数据源
+ datasource:
+   password: HallManageOpr
+   username: HallManageOpr
+   url: jdbc:mysql://172.18.231.40:8066/AIHallManage?useUnicode=true&characterEncoding=utf-8&useSSL=false
+   driver-class-name: com.mysql.jdbc.Driver
+   type: com.alibaba.druid.pool.DruidDataSource
+
+#配置html文件路径
+#  thymeleaf:
+#    prefix: classpath:/templates/
+
+
+#mybatis配置  独立节点
+mybatis:
+  #实体类对应的包
+  type-aliases-package: com.alice.function.entity
+  #mapper文件的位置 mapperLocations指的路径是src/main/resources
+  mapper-locations: classpath:mapper/*.xml
+
+#pagehelper分页插件
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+
+#日志级别
+logging:
+  level:
+#    root: info
+#    com.alice: debug
+#    com.example.controller: error
+#    com.example.service: info
+    com.alice.hallOrder: debug
+
+#jcf:
+# core:
+#   databind-json-type: fastjson
+#   bean:
+#     bean-scan-packages: com.alice.**
+# callee:
+#   a:
+#    inter-class-or-svc-names: com_sitech_pgmng_atom_inter_IAttrArrayQryAoSvc_query,com_sitech_pgmng_comp_inter_IMoreBusiRelChkCoSvc_chkMoreBusiRel,
+#     com_sitech_pgmng_atom_inter_IPopularPgPrcQryAoSvc_query,com_sitech_pgmng_atom_inter_IQryGoodsPrcDetailAoSvc_query,
+#      com_sitech_pgmng_atom_inter_ISearchPgPrcAoSvc_searchPgPrc,com_sitech_pgmng_atom_inter_IQryGoodsPrcDetailAoSvc_query
+       #是否开启熔断
+       #circuit-breaker-enable: false
+       #被调的服务类型
+#    architecture-type: hsf
+       #针对springcloud服务，需要在服务前加上这些
+#    prefix: http://CUSTCENTER/
+ service:
+   type: hsf
+ hsf:
+     application:
+       consumerAppName: jcf30Test
+     registry:
+       address: 172.21.3.92:2180,172.21.3.99:2181,172.21.3.100:2182
+     protocol:
+       name: dubbo
+       port: 33350
+       threads: 2
+     usedforclient: true
+     provider:
+       timeout: 5000
+
+#management:
+#  security:
+#    enabled: false
+
+
+#####################################################################
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://172.21.2.40:8761/eureka/
+  instance:
+    instance-id: ${spring.application.name}:${spring.cloud.client.ipAddress}:${server.port}
+    prefer-ip-address: false
+  healthcheck:
+    enabled: true
+server:
+  port: 8764
+#spring:
+#  application:
+#    name: familybusi_custservcie
+#  cloud:
+#    config:
+#      enabled: false
+
+#info: #定义各种额外的详情给服务端显示
+#  app:
+#    name: "@project.name@" #从pom.xml中获取
+#    description: "@project.description@"
+#    version: "@project.version@"
+#    spring-boot-version: "@project.parent.version@"

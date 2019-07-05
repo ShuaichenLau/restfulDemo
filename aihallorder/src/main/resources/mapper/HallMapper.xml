@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alice.function.mapper.HallMapper">
+
+    <insert id="saveHallTalkgoodsOrder" parameterType="com.alice.function.entity.HallTalkgoodsContent" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hall_talkgoods_content(order_id, phone_no, take_code, goods_id, goods_name, group_id, group_name, order_time, pay_num, cust_photo, order_status, cust_id)
+         VALUES ( #{order_id}, #{phone_no}, #{take_code}, #{goods_id}, #{goods_name}, #{group_id}, #{group_name}, #{order_time}, #{pay_num} ,#{cust_photo}, #{order_status}, #{cust_id})
+    </insert>
+
+    <insert id="saveHallOrder" parameterType="com.alice.function.entity.HallOrderInfo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO hall_order_info( order_id, order_name, template_id, group_id, group_name, order_type, status, channel_id, login_no, order_dis_type, cust_id, cust_name, phone_no, create_time, finish_time, order_desc, face_image_id, id_no)
+        VALUES
+        (#{order_id},#{order_name},#{template_id},#{group_id},#{group_name},#{order_type},#{status},#{channel_id},#{login_no},#{order_dis_type},#{cust_id},#{cust_name},#{phone_no},#{create_time},#{finish_time},#{order_desc},#{face_image_id}, #{id_no})
+    </insert>
+
+    <!--更新工单状态为待处理-->
+    <update id="updateHallOrderInfoStatus">
+        UPDATE hall_order_info SET status = #{status}, login_no = #{login_no} WHERE order_id = #{order_id};
+    </update>
+
+    <update id="updateHallTalkGoodsContent">
+        UPDATE hall_talkgoods_content SET order_status = #{order_status} WHERE order_id = #{order_id} and id = #{id}
+    </update>
+
+    <update id="updateTransferLoginNoByOrderIdForHallOrderTurn">
+        UPDATE hall_order_turn SET login_no = #{login_no} WHERE order_Id = #{order_Id}
+    </update>
+
+    <update id="updateTransferLoginNoByOrderIdForHallOrderInfo">
+        UPDATE hall_order_info SET login_no = #{login_no} WHERE order_Id = #{order_Id}
+    </update>
+
+    <update id="updateHallMarketStatusForHallOrderId">
+        update hall_marketorder_content SET STATUS_CODE = #{STATUS_CODE} where ORDER_ID = #{ORDER_ID}
+    </update>
+
+    <delete id="delHallOrderInfo">
+        delete from hall_order_info where id = #{id}
+    </delete>
+
+    <delete id="delFinishOrderByOrderId">
+        delete from hall_order_info where id = #{id} and order_id = #{order_id}
+    </delete>
+
+    <select id="getEquipmentAndGroupIdByEquipment" resultType="com.alice.function.entity.HallEquipment" parameterType="com.alice.function.entity.HallEquipment">
+        SELECT * FROM hall_equipment_info where 1=1
+        <if test="equipment_mac != null and equipment_mac != ''">
+            and equipment_mac = #{equipment_mac}
+        </if>
+    </select>
+
+    <!--取货工单 自动派发  获取所有取货工单 工单状态为1 "生成状态"-->
+    <select id="getAutoHallOrderOfGetGoods" resultType="com.alice.function.entity.HallTalkgoodsContent">
+        SELECT * FROM hall_talkgoods_content where order_status = 1
+    </select>
+    <!--        <![CDATA[ and DATE_SUB(CURDATE(), INTERVAL 3 DAY) < Date(create_time) ]]>-->
+
+    <select id="getHallWorkerOfToday" resultType="com.alice.function.entity.HallWorkplanInfo" parameterType="java.lang.Integer">
+        SELECT * FROM hall_workplan_info WHERE work_date = date(now())
+        <if test="work_role != null and work_role != ''">
+            and work_role = #{work_role}
+        </if>
+    </select>
+
+    <select id="getHallOrderTurnCount" resultType="com.alice.function.entity.HallOrderTurn">
+        SELECT * FROM hall_order_turn where status = 3 AND dispose_date = date(now())
+    </select>
+
+    <select id="getMinimumHoldingWorkOrderRecord" resultType="com.alice.function.entity.HallOrderTurnBean">
+        SELECT
+        hot.login_no ,  hot.cust_id, hot.order_id, count(hot.order_id) as orderCount
+        FROM hall_order_turn hot
+        GROUP BY hot.login_no
+    </select>
+
+    <select id="getHallOrderInfos" resultType="com.alice.function.entity.HallOrderInfo">
+        SELECT orderInfo.*, slm.login_name as login_Name FROM hall_order_info as orderInfo
+        left JOIN sys_login_msg as slm on slm.login_no = orderInfo.login_no
+        where 1=1 and orderInfo.group_id in ( SELECT group_id FROM sys_group_info WHERE parent_group_id = #{group_id} )
+        <if test="login_no != null and login_no != ''">
+            and orderInfo.login_no = #{login_no}
+        </if>
+        <if test="phone_no != null and phone_no != ''">
+            and orderInfo.phone_no = #{phone_no}
+        </if>
+        <if test="order_name != null and order_name != ''">
+            and orderInfo.order_name LIKE #{order_name}
+        </if>
+        <if test="order_type != null and order_type != ''">
+            and orderInfo.order_type = #{order_type}
+        </if>
+        ORDER BY orderInfo.create_time DESC
+    </select>
+
+    <select id="getSysUserByLoginNo" resultType="com.alice.function.entity.SysLoginMsg">
+        SELECT * FROM sys_login_msg where login_no = #{loginNo}
+    </select>
+
+    <select id="getWorkerInfoByLoginId" resultType="com.alice.function.entity.HallWorkplanInfo">
+        SELECT * FROM hall_workplan_info WHERE work_date = date(now()) and work_name = #{loginMsgId} ORDER BY work_role
+    </select>
+
+    <!--获取取货工单的属性 by orderId and groupId -->
+    <select id="getTakegoodsForOrderInfo" resultType="com.alice.function.entity.HallTalkgoodsContent">
+        select * from hall_talkgoods_content where group_id in ( SELECT group_id FROM sys_group_info WHERE parent_group_id = #{group_id} )
+        and order_id = #{order_id}
+    </select>
+
+
+    <select id="getHallOrderInfoByOrderIdAndGroupId" resultType="com.alice.function.entity.HallOrderInfo">
+        select * from hall_order_info where group_id in ( SELECT group_id FROM sys_group_info WHERE parent_group_id = #{group_id} )
+        and order_id = #{order_id} and id = #{id}
+    </select>
+
+    <select id="getWorkerListByNowAndGroupId" resultType="com.alice.function.entity.HallWorkplanInfo">
+        select work.* , slm.login_name as workNameStr FROM hall_workplan_info as work, sys_login_msg as slm  where work.work_name = slm.id and work.group_id = #{group_id} and work.work_date = date(now())
+    </select>
+
+    <select id="getSysUserByLoginId" resultType="com.alice.function.entity.SysLoginMsg">
+        SELECT * FROM sys_login_msg where id = #{id}
+    </select>
+
+    <select id="getGroupInfo" resultType="com.alice.function.entity.SysGroupMsg">
+        select * from sys_group_msg where group_id = #{group_id}
+    </select>
+
+    <select id="getHallMarketForOrderInfo" resultType="com.alice.function.entity.HallMarketInfoEntity">
+        select * from hall_marketorder_content where ORDER_ID = #{order_id}
+    </select>
+
+    <select id="getAutoHallOrderOfMarket" resultType="com.alice.function.entity.HallOrderInfo">
+      select  * from hall_order_info where 1=1 and order_type = 2 and status = 1 and channel_id = 5
+    </select>
+
+    <select id="getHallOrderInfoForLoginNoAndConditinon" resultType="com.alice.function.entity.HallOrderInfo">
+        select  * from hall_order_info_his orderInfoHis where 1=1 and orderInfoHis.login_no = #{login_no}
+        <if test="order_type != null and order_type != ''">
+            and orderInfoHis.order_type = #{order_type}
+        </if>
+        <if test="group_id != null and group_id != ''">
+            and orderInfoHis.group_id = #{group_id}
+        </if>
+        <if test="phone_no != null and phone_no != ''">
+            and orderInfoHis.phone_no = #{phone_no}
+        </if>
+
+        <if test="BEGIN_DATE != null and BEGIN_DATE != ''">
+            <![CDATA[ and orderInfoHis.create_time >= #{BEGIN_DATE} ]]>
+        </if>
+        <if test="END_DATE != null and END_DATE != ''">
+            <![CDATA[ and orderInfoHis.create_time <= #{END_DATE} ]]>
+        </if>
+        order by orderInfoHis.id desc
+    </select>
+
+    <insert id="saveHallTalkgoodsOrderHis">
+        INSERT INTO hall_talkgoods_content_his(id, order_id, phone_no, take_code, goods_id, goods_name, group_id, group_name, order_time, pay_num, cust_photo)
+        VALUES (#{id}, #{order_id}, #{phone_no}, #{take_code}, #{goods_id}, #{goods_name}, #{group_id}, #{group_name}, #{order_time}, #{pay_num}, #{cust_photo});
+    </insert>
+
+    <insert id="saveHallOrderHis">
+        INSERT INTO hall_order_info_his(id, order_id, order_name, template_id, group_id, group_name, order_type, status, channel_id, login_no, order_dis_type, cust_id, cust_name, phone_no, create_time, finish_time, order_desc,order_note,order_eval)
+        VALUES
+        (#{id},#{order_id},#{order_name},#{template_id},#{group_id},#{group_name},#{order_type},#{status},#{channel_id},#{login_no},#{order_dis_type},#{cust_id},#{cust_name},#{phone_no},#{create_time},#{finish_time},#{order_desc},#{order_note},#{order_eval})
+    </insert>
+
+    <insert id="addHallOrderTurn">
+        INSERT INTO hall_order_turn(order_Id, login_no, status, order_time, dispose_date, cust_id)
+        VALUES ( #{order_Id},  #{login_no}, #{status}, #{order_time}, #{dispose_date} ,#{cust_id})
+    </insert>
+
+    <insert id="saveMarketInfo">
+        INSERT INTO hall_marketorder_content
+        ( ID_NO,PHONE_APP,END_DATE,ACT_ID,PHONE_NO,ONEKEY_ORDER_FLAG,LANUCH_CHANNEL,BUSI_TYPE,POSITION_ID,CONTENT_TYPE,MARKET_CASE_ID,CUST_GROUP_ID,PROD_TYPE,PROD_ID,CHN_TYPE,ACT_NAME,LANUCH_NO,ORDER_TRAC_SERIAL,MEANS_NAME,SMS_INSTRUCTION,RES_CODE,MARKET_OPERATION,MEANS_ID,START_DATE,STATUS_CODE,OPER_DATE,PROD_PRCDESC,TERMI_NAME,PROD_PRCD,COMMEND_CONTENT,ORDER_ID,SHORT_MSG,COMMEND_LINK,COMMEND_TITLE,MARKET_CASE_NAME)
+        VALUES
+        ( #{ID_NO}, #{PHONE_APP}, #{END_DATE}, #{ACT_ID}, #{PHONE_NO}, #{ONEKEY_ORDER_FLAG}, #{LANUCH_CHANNEL}, #{BUSI_TYPE}, #{POSITION_ID}, #{CONTENT_TYPE}, #{MARKET_CASE_ID}, #{CUST_GROUP_ID}, #{PROD_TYPE}, #{PROD_ID}, #{CHN_TYPE}, #{ACT_NAME}, #{LANUCH_NO}, #{ORDER_TRAC_SERIAL}, #{MEANS_NAME}, #{SMS_INSTRUCTION}, #{RES_CODE}, #{MARKET_OPERATION}, #{MEANS_ID}, #{START_DATE}, #{STATUS_CODE}, #{OPER_DATE}, #{PROD_PRCDESC}, #{TERMI_NAME}, #{PROD_PRCD}, #{COMMEND_CONTENT}, #{ORDER_ID}, #{SHORT_MSG}, #{COMMEND_LINK}, #{COMMEND_TITLE}, #{MARKET_CASE_NAME})
+    </insert>
+
+</mapper>

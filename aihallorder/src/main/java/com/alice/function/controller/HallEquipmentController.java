@@ -1,9 +1,9 @@
 package com.alice.function.controller;
 
-import com.google.common.collect.Maps;
 import com.alice.common.util.ParameterConversion;
 import com.alice.function.entity.HallEquipment;
 import com.alice.function.service.IHallService;
+import com.google.common.collect.Maps;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

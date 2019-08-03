@@ -37,17 +37,14 @@ public class MarketAutoWorkOrder implements CommandLineRunner {
     public void run(String... strings) throws Exception {
 
         ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
 
-                while (true) {
-                    try {
-                        Thread.sleep(HallCode.tenSecone);
-                        getAutoHallOrderOfMarket();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        executorService.execute(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(HallCode.tenSecone);
+                    getAutoHallOrderOfMarket();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         });

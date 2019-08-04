@@ -36,9 +36,11 @@ public class TalkgoodsAutoWorkOrder implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
+//        ExecutorService executorService = Executors.newCachedThreadPool();
+//        executorService.execute(() -> {
+//        });
 
-        executorService.execute(() -> {
+        new Thread(() -> {
             while (true) {
                 try {
                     Thread.sleep(HallCode.fiveSecone);
@@ -47,7 +49,7 @@ public class TalkgoodsAutoWorkOrder implements CommandLineRunner {
                     e.printStackTrace();
                 }
             }
-        });
+        }).start();
     }
 
 

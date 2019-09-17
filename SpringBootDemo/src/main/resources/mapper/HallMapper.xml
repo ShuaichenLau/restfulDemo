@@ -108,7 +108,6 @@
         and order_id = #{order_id}
     </select>
 
-
     <select id="getHallOrderInfoByOrderIdAndGroupId" resultType="com.alice.function.entity.HallOrderInfo">
         select * from hall_order_info where group_id in ( SELECT group_id FROM sys_group_info WHERE parent_group_id = #{group_id} )
         and order_id = #{order_id} and id = #{id}

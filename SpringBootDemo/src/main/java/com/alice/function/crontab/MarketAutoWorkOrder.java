@@ -36,21 +36,20 @@ public class MarketAutoWorkOrder implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
+//        ExecutorService executorService = Executors.newCachedThreadPool();
+//        executorService.execute(() -> {
+//        });
 
-                while (true) {
-                    try {
-                        Thread.sleep(HallCode.tenSecone);
-                        getAutoHallOrderOfMarket();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(HallCode.tenSecone);
+                    getAutoHallOrderOfMarket();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        });
+        }).start();
     }
 
     /**
@@ -105,13 +104,14 @@ public class MarketAutoWorkOrder implements CommandLineRunner {
      * @param WorkerList                 当前排班人员团队
      */
     public String DistributionOfHallMarketOrder(List<HallOrderInfo> hallOrderInfoListForMarket, List<HallWorkplanInfo> WorkerList) {
-        List<HallOrderTurn> hallOrderTurns = Lists.newCopyOnWriteArrayList();
 
         if (WorkerList.isEmpty()) {
             return "当天没有可以派发的行销人员...";
         } else if (hallOrderInfoListForMarket.isEmpty()) {
             return "当天没有可以派发的营销工单...";
         }
+
+        List<HallOrderTurn> hallOrderTurns = Lists.newCopyOnWriteArrayList();
 
         //获取今天的营业厅人员 手里的工单情况
         hallOrderTurns = hallServiceImpl.getHallOrderTurnCount();

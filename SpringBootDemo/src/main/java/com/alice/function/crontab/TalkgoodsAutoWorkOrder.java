@@ -36,20 +36,20 @@ public class TalkgoodsAutoWorkOrder implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
 
-        ExecutorService executorService = Executors.newCachedThreadPool();
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    try {
-                        Thread.sleep(HallCode.fiveSecone);
-                        getAutoHallOrderOfGetGoods();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+//        ExecutorService executorService = Executors.newCachedThreadPool();
+//        executorService.execute(() -> {
+//        });
+
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(HallCode.fiveSecone);
+                    getAutoHallOrderOfGetGoods();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        });
+        }).start();
     }
 
 

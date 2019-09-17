@@ -8,7 +8,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<artifactId>aihalloperation</artifactId>
 	<version>v1.0</version>
 	<packaging>pom</packaging>
-	<name>aihalloperation</name>
+	<name>SpringBootDemo</name>
 	<description>Demo project for Spring Boot</description>
 	<url>http://maven.apache.org</url>
 
@@ -28,7 +28,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
      </properties>
 
 	<modules>
-		<module>aihallorder</module>
+		<module>SpringBootDemo</module>
 	</modules>
 
 	<dependencies>

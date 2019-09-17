@@ -68,7 +68,7 @@ public class TalkgoodsAutoWorkOrder implements CommandLineRunner {
 
         //查询今天的营业厅导购排班人员
         hallWorkplanInfos = hallServiceImpl.getHallWorkerOfToday(HallCode.Work_role04);
-        String msg = "";
+        String msg;
 
         if (hallWorkplanInfos != null && !hallWorkplanInfos.isEmpty()) {
             for (HallWorkplanInfo info : hallWorkplanInfos) {
